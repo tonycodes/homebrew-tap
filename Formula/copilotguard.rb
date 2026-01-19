@@ -16,10 +16,6 @@ class Copilotguard < Formula
   end
 
   on_linux do
-    on_arm do
-      url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-linux-arm64.tar.gz"
-      sha256 "PLACEHOLDER_LINUX_ARM64"
-    end
     on_intel do
       url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-linux-amd64.tar.gz"
       sha256 "PLACEHOLDER_LINUX_AMD64"
