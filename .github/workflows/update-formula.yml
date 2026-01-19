@@ -1,0 +1,48 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [update-formula]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update formula
+        run: |
+          FORMULA="Formula/${{ github.event.client_payload.formula }}.rb"
+          VERSION="${{ github.event.client_payload.version }}"
+          DARWIN_ARM64="${{ github.event.client_payload.darwin_arm64_sha256 }}"
+          DARWIN_AMD64="${{ github.event.client_payload.darwin_amd64_sha256 }}"
+          LINUX_AMD64="${{ github.event.client_payload.linux_amd64_sha256 }}"
+          LINUX_ARM64="${{ github.event.client_payload.linux_arm64_sha256 }}"
+
+          # Update version
+          sed -i "s/version \".*\"/version \"${VERSION}\"/" "$FORMULA"
+
+          # Update checksums
+          sed -i "s/sha256 \"PLACEHOLDER_DARWIN_ARM64\"/sha256 \"${DARWIN_ARM64}\"/" "$FORMULA"
+          sed -i "s/sha256 \"PLACEHOLDER_DARWIN_AMD64\"/sha256 \"${DARWIN_AMD64}\"/" "$FORMULA"
+          sed -i "s/sha256 \"PLACEHOLDER_LINUX_ARM64\"/sha256 \"${LINUX_ARM64}\"/" "$FORMULA"
+          sed -i "s/sha256 \"PLACEHOLDER_LINUX_AMD64\"/sha256 \"${LINUX_AMD64}\"/" "$FORMULA"
+
+          # Also update existing checksums (for subsequent releases)
+          sed -i "s/sha256 \"[a-f0-9]\{64\}\"/sha256 \"TEMP_PLACEHOLDER\"/g" "$FORMULA"
+          
+          # Now replace in order
+          sed -i "0,/TEMP_PLACEHOLDER/s//${DARWIN_ARM64}/" "$FORMULA"
+          sed -i "0,/TEMP_PLACEHOLDER/s//${DARWIN_AMD64}/" "$FORMULA"
+          sed -i "0,/TEMP_PLACEHOLDER/s//${LINUX_ARM64}/" "$FORMULA"
+          sed -i "0,/TEMP_PLACEHOLDER/s//${LINUX_AMD64}/" "$FORMULA"
+
+          cat "$FORMULA"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/
+          git commit -m "Update ${{ github.event.client_payload.formula }} to ${{ github.event.client_payload.version }}"
+          git push
