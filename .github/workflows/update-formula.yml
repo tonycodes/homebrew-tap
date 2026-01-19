@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
 
       - name: Update formula
         run: |
@@ -21,15 +23,10 @@ jobs:
           # Update version
           sed -i "s/version \".*\"/version \"${VERSION}\"/" "$FORMULA"
 
-          # Update checksums
-          sed -i "s/sha256 \"PLACEHOLDER_DARWIN_ARM64\"/sha256 \"${DARWIN_ARM64}\"/" "$FORMULA"
-          sed -i "s/sha256 \"PLACEHOLDER_DARWIN_AMD64\"/sha256 \"${DARWIN_AMD64}\"/" "$FORMULA"
-          sed -i "s/sha256 \"PLACEHOLDER_LINUX_AMD64\"/sha256 \"${LINUX_AMD64}\"/" "$FORMULA"
-
-          # Also update existing checksums (for subsequent releases)
+          # Update checksums - replace existing checksums in order
           sed -i "s/sha256 \"[a-f0-9]\{64\}\"/sha256 \"TEMP_PLACEHOLDER\"/g" "$FORMULA"
 
-          # Now replace in order
+          # Replace placeholders in order (darwin-arm64, darwin-amd64, linux-amd64)
           sed -i "0,/TEMP_PLACEHOLDER/s//${DARWIN_ARM64}/" "$FORMULA"
           sed -i "0,/TEMP_PLACEHOLDER/s//${DARWIN_AMD64}/" "$FORMULA"
           sed -i "0,/TEMP_PLACEHOLDER/s//${LINUX_AMD64}/" "$FORMULA"
