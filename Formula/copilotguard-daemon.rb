@@ -1,40 +1,40 @@
-class Copilotguard < Formula
+class CopilotguardDaemon < Formula
   desc "Lightweight daemon that intercepts and analyzes AI coding assistant traffic"
   homepage "https://github.com/tonycodes/copilotguard-daemon"
-  version "0.1.0"
+  version "0.2.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-darwin-arm64.tar.gz"
-      sha256 "78fea969a3084d9b3e9c6526b1e27a16a31e7c4eaf8237060400b88fcddb7ba4"
+      sha256 "PLACEHOLDER_DARWIN_ARM64"
     end
     on_intel do
       url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-darwin-amd64.tar.gz"
-      sha256 "2f962481eb2b1c5df61c0c108d97c0958005aa0198f6056af7b1c286ea61ec7b"
+      sha256 "PLACEHOLDER_DARWIN_AMD64"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-linux-amd64.tar.gz"
-      sha256 "a384c4c2fe0ea181cc79c9da587460c0531dcc41a0559e3fb416da0ced9796c9"
+      sha256 "PLACEHOLDER_LINUX_AMD64"
     end
   end
 
   def install
-    bin.install "copilotguard"
+    bin.install "copilotguard-daemon"
   end
 
   def post_install
-    ohai "CopilotGuard installed!"
-    ohai "Run 'sudo copilotguard install' to complete setup"
+    ohai "CopilotGuard Daemon installed!"
+    ohai "Run 'sudo copilotguard-daemon install' to complete setup"
   end
 
   def caveats
     <<~EOS
       To complete installation, run:
-        sudo copilotguard install
+        sudo copilotguard-daemon install
 
       This will:
         - Generate a local CA certificate
@@ -48,6 +48,6 @@ class Copilotguard < Formula
   end
 
   test do
-    assert_match "copilotguard", shell_output("#{bin}/copilotguard --version")
+    assert_match "copilotguard-daemon", shell_output("#{bin}/copilotguard-daemon --version")
   end
 end

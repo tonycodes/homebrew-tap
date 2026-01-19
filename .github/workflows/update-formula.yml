@@ -23,8 +23,8 @@ jobs:
           # Update version
           sed -i "s/version \".*\"/version \"${VERSION}\"/" "$FORMULA"
 
-          # Update checksums - replace existing checksums in order
-          sed -i "s/sha256 \"[a-f0-9]\{64\}\"/sha256 \"TEMP_PLACEHOLDER\"/g" "$FORMULA"
+          # Update checksums - replace existing checksums or placeholders in order
+          sed -i "s/sha256 \"[a-f0-9A-Z_]\{64,\}\"/sha256 \"TEMP_PLACEHOLDER\"/g" "$FORMULA"
 
           # Replace placeholders in order (darwin-arm64, darwin-amd64, linux-amd64)
           sed -i "0,/TEMP_PLACEHOLDER/s//${DARWIN_ARM64}/" "$FORMULA"
