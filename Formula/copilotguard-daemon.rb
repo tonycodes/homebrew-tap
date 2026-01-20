@@ -26,25 +26,30 @@ class CopilotguardDaemon < Formula
     bin.install "copilotguard-daemon"
   end
 
-  def post_install
-    ohai "CopilotGuard Daemon installed!"
-    ohai "Run 'sudo copilotguard-daemon install' to complete setup"
-  end
-
   def caveats
-    <<~EOS
-      To complete installation, run:
-        sudo copilotguard-daemon install
+    if File.exist?("/etc/copilotguard/ca.crt")
+      <<~EOS
+        To complete the upgrade, restart the daemon:
+          sudo copilotguard-daemon stop
+          sudo copilotguard-daemon start
+      EOS
+    else
+      <<~EOS
+        First-time setup required. Run:
+          sudo copilotguard-daemon install
+          copilotguard-daemon login
 
-      This will:
-        - Generate a local CA certificate
-        - Add the CA to your system trust store
-        - Modify /etc/hosts to redirect AI traffic
-        - Install and start the system service
+        This will:
+          - Generate a local CA certificate
+          - Add the CA to your system trust store
+          - Modify /etc/hosts to redirect AI traffic
+          - Install and start the system service
+          - Connect to your CopilotGuard account
 
-      For GitHub Copilot CLI support, add to your shell profile:
-        alias copilot='NODE_EXTRA_CA_CERTS=/etc/copilotguard/ca.crt copilot'
-    EOS
+        For GitHub Copilot CLI support, add to your shell profile:
+          alias copilot='NODE_EXTRA_CA_CERTS=/etc/copilotguard/ca.crt copilot'
+      EOS
+    end
   end
 
   test do
