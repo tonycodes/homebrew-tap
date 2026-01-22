@@ -1,13 +1,13 @@
 class CopilotguardDaemon < Formula
   desc "Lightweight daemon that intercepts and analyzes AI coding assistant traffic"
   homepage "https://github.com/tonycodes/copilotguard-daemon"
-  version "0.4.0"
+  version "0.4.1"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-darwin-arm64.tar.gz"
-      sha256 "c3649a559e357e69b3ead4d67af6406621c0e0524380e86047947b9d232b6205"
+      sha256 "2ed2552ec3fb4ab9856873d8130a08c437cd2aa800b15a844c88d84340f1c916"
     end
     on_intel do
       url "https://github.com/tonycodes/copilotguard-daemon/releases/download/v#{version}/copilotguard-darwin-amd64.tar.gz"
